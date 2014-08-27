@@ -107,15 +107,9 @@ public class Foreign extends Column {
                         Column column = TableUtils.getColumnOrId(foreignEntityType, foreignColumnName);
                         columnValue = column.getColumnValue(foreignEntities.get(0));
 
-                        // 仅自动关联外键
                         Table table = this.getTable();
-                        if (table != null && column instanceof Id) {
-                            for (Object foreignObj : foreignEntities) {
-                                Object idValue = column.getColumnValue(foreignObj);
-                                if (idValue == null) {
-                                    table.db.saveOrUpdate(foreignObj);
-                                }
-                            }
+                        if (table != null && columnValue == null && column instanceof Id) {
+                            table.db.saveOrUpdateAll(foreignEntities);
                         }
 
                         columnValue = column.getColumnValue(foreignEntities.get(0));
